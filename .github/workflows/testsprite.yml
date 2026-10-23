@@ -1,0 +1,43 @@
+name: TestSprite E2E Tests
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  test:
+    name: Run TestSprite Autonomous E2E Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Start Database & App
+        run: |
+          npx prisma generate
+          npm run build
+          npm run start &
+          npx wait-on http://localhost:3000
+
+      - name: Run TestSprite Preflight Check
+        run: npx @testsprite/testsprite-cli doctor
+        env:
+          TESTSPRITE_API_KEY: ${{ secrets.TESTSPRITE_API_KEY }}
+
+      - name: Run TestSprite E2E Test Suite
+        run: |
+          npx @testsprite/testsprite-cli test run --all --project d0bbd473-8c77-4c79-b6d4-c93156264928
+        env:
+          TESTSPRITE_API_KEY: ${{ secrets.TESTSPRITE_API_KEY }}

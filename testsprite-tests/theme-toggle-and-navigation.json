@@ -1,0 +1,41 @@
+{
+  "projectId": "d0bbd473-8c77-4c79-b6d4-c93156264928",
+  "type": "frontend",
+  "name": "Theme Toggle & Navigation Verification",
+  "description": "Verifies login, navbar navigation, and bidirectional theme switching between Cursor Atelier and Auros Liquid Abyss.",
+  "priority": "p1",
+  "planSteps": [
+    {
+      "type": "action",
+      "description": "Navigate to /login, enter username 'admin' and password 'ChangeMe123!', then click Anmelden"
+    },
+    {
+      "type": "assertion",
+      "description": "Verify the user is redirected to the dashboard at / and the welcome message 'Willkommen, admin' is visible"
+    },
+    {
+      "type": "action",
+      "description": "Click the 'Auros' theme button in the top navigation bar switcher"
+    },
+    {
+      "type": "assertion",
+      "description": "Verify the application shifts to the Auros dark theme with deep teal background and glowing accents"
+    },
+    {
+      "type": "action",
+      "description": "Navigate to /konto by clicking the username in the navbar"
+    },
+    {
+      "type": "assertion",
+      "description": "Verify that the 'Erscheinungsbild & Visuelle Identität' section is displayed with both Cursor and Auros cards"
+    },
+    {
+      "type": "action",
+      "description": "Click on the 'Cursor Atelier' card to switch back to the warm parchment theme"
+    },
+    {
+      "type": "assertion",
+      "description": "Verify that the theme returns to Cursor Atelier with light parchment canvas and the active badge shows on Cursor Atelier"
+    }
+  ]
+}

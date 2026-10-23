@@ -1,0 +1,33 @@
+{
+  "projectId": "d0bbd473-8c77-4c79-b6d4-c93156264928",
+  "type": "frontend",
+  "name": "Study Mode & Medical Specialties",
+  "description": "Verifies accessing Lernmodus, viewing specialty categories, starting a learning session, and grading.",
+  "priority": "p1",
+  "planSteps": [
+    {
+      "type": "action",
+      "description": "Navigate to /lernen"
+    },
+    {
+      "type": "assertion",
+      "description": "Verify the heading 'Lernmodus' and specialty cards such as 'Glaukom', 'Retina und Glaskörper', and 'Uveitis' are visible"
+    },
+    {
+      "type": "action",
+      "description": "Navigate to /bildfragen"
+    },
+    {
+      "type": "assertion",
+      "description": "Verify the Bildfragen page loads successfully"
+    },
+    {
+      "type": "action",
+      "description": "Navigate to /fortschritt"
+    },
+    {
+      "type": "assertion",
+      "description": "Verify the Lernfortschritt page displays progress statistics and readiness indicators"
+    }
+  ]
+}

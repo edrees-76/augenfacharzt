@@ -1,0 +1,33 @@
+{
+  "projectId": "d0bbd473-8c77-4c79-b6d4-c93156264928",
+  "type": "frontend",
+  "name": "Admin Dashboard & Question Management",
+  "description": "Verifies the admin overview, question catalogue, specialty management, and approval workflows.",
+  "priority": "p1",
+  "planSteps": [
+    {
+      "type": "action",
+      "description": "Navigate to /admin"
+    },
+    {
+      "type": "assertion",
+      "description": "Verify the Administrator-Übersicht heading and summary cards are visible"
+    },
+    {
+      "type": "action",
+      "description": "Navigate to /admin/fachgebiete"
+    },
+    {
+      "type": "assertion",
+      "description": "Verify that all 12 ophthalmology specialty areas are displayed"
+    },
+    {
+      "type": "action",
+      "description": "Navigate to /admin/fragen"
+    },
+    {
+      "type": "assertion",
+      "description": "Verify that the question catalog management table loads correctly"
+    }
+  ]
+}

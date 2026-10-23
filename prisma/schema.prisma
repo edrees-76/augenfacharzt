@@ -1,0 +1,354 @@
+// AugenFacharzt – Mündliche Prüfung
+// Prisma schema (Stage 1 — functional core)
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ---------- Enums ----------
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum UserStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  SUSPENDED
+}
+
+enum ContentStatus {
+  DRAFT
+  IN_REVIEW
+  APPROVED
+  PUBLISHED
+}
+
+enum AnswerType {
+  ORIGINAL
+  MODEL
+  AI_SUGGESTED // reserved for Stage 2 (AI-suggested answers), unused in Stage 1
+}
+
+enum CitationSourceType {
+  DOG_LEITLINIE
+  DOG_BVA_STELLUNGNAHME
+  AWMF_LEITLINIE
+  EYEWIKI
+  OTHER
+}
+
+enum ImageType {
+  FUNDUS
+  OCT
+  SLIT_LAMP
+  FLUORESCEIN_ANGIOGRAPHY
+  VISUAL_FIELD
+  CORNEAL_TOPOGRAPHY
+  ULTRASOUND
+  CT_MRT
+  ANATOMICAL_DIAGRAM
+  OTHER
+}
+
+enum Confidence {
+  SICHER
+  TEILWEISE
+  NICHT_GEWUSST
+}
+
+enum SourceType {
+  MANUAL
+  IMPORT
+}
+
+enum ImportFileType {
+  PDF
+  DOCX
+  TXT
+  XLSX
+}
+
+enum ImportBatchStatus {
+  PROCESSING
+  NEEDS_REVIEW
+  REVIEWED
+  FAILED
+}
+
+enum ExamMode {
+  SPECIALTY
+  MIXED
+  IMAGE
+}
+
+// ---------- Auth & users ----------
+
+model User {
+  id           String     @id @default(cuid())
+  username     String     @unique
+  email        String?    @unique
+  passwordHash String
+  role         Role       @default(USER)
+  status       UserStatus @default(PENDING)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  sessions         Session[]
+  resetTokens      PasswordResetToken[]
+  progress         UserProgress[]
+  examSessions     ExamSession[]
+  createdQuestions Question[]           @relation("QuestionCreatedBy")
+  createdCases     ClinicalCase[]       @relation("CaseCreatedBy")
+  uploadedImages   QuestionImage[]      @relation("ImageUploadedBy")
+  uploadedBatches  ImportBatch[]        @relation("BatchUploadedBy")
+  approvedAnswers  QuestionAnswer[]     @relation("AnswerApprovedBy")
+  auditLogs        AuditLog[]           @relation("AuditActor")
+
+  @@index([status])
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  userAgent String?
+  ipAddress String?
+
+  @@index([userId])
+}
+
+model PasswordResetToken {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+}
+
+model RegistrationSettings {
+  id               Int      @id @default(1)
+  registrationOpen Boolean  @default(true)
+  updatedAt        DateTime @updatedAt
+}
+
+// ---------- Content taxonomy ----------
+
+model Specialty {
+  id    String @id @default(cuid())
+  name  String @unique
+  slug  String @unique
+  order Int    @default(0)
+
+  questions QuestionSpecialty[]
+}
+
+model QuestionSpecialty {
+  questionId  String
+  question    Question  @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  specialtyId String
+  specialty   Specialty @relation(fields: [specialtyId], references: [id], onDelete: Cascade)
+
+  @@id([questionId, specialtyId])
+}
+
+// ---------- Questions, answers, cases, images ----------
+
+model Question {
+  id            String        @id @default(cuid())
+  originalText  String        @db.Text
+  sourceType    SourceType    @default(MANUAL)
+  sourceFile    String?
+  pageReference String?
+  importDate    DateTime?
+  status        ContentStatus @default(DRAFT)
+
+  importBatchId String?
+  importBatch   ImportBatch? @relation(fields: [importBatchId], references: [id], onDelete: SetNull)
+
+  createdById String
+  createdBy   User   @relation("QuestionCreatedBy", fields: [createdById], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  specialties  QuestionSpecialty[]
+  answers      QuestionAnswer[]
+  clinicalCase ClinicalCase?
+  images       QuestionImage[]
+  progress     UserProgress[]
+  examAnswers  ExamAnswer[]
+
+  @@index([status])
+  @@index([sourceType])
+}
+
+model QuestionAnswer {
+  id         String     @id @default(cuid())
+  questionId String
+  question   Question   @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  type       AnswerType
+  text       String     @db.Text
+
+  approvedById String?
+  approvedBy   User?     @relation("AnswerApprovedBy", fields: [approvedById], references: [id], onDelete: SetNull)
+  approvedAt   DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  citations AnswerCitation[]
+
+  @@index([questionId, type])
+}
+
+model AnswerCitation {
+  id        String             @id @default(cuid())
+  answerId  String
+  answer    QuestionAnswer     @relation(fields: [answerId], references: [id], onDelete: Cascade)
+  type      CitationSourceType
+  title     String
+  /// Free text, e.g. "2022", "Stand 05/2023" — guidelines aren't always dated to the year alone.
+  dateLabel String?
+  url       String?
+  order     Int                @default(0)
+
+  @@index([answerId])
+}
+
+model ClinicalCase {
+  id           String        @id @default(cuid())
+  questionId   String        @unique
+  question     Question      @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  scenarioText String        @db.Text
+  status       ContentStatus @default(DRAFT)
+
+  createdById String
+  createdBy   User   @relation("CaseCreatedBy", fields: [createdById], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  followUps FollowUpQuestion[]
+}
+
+model FollowUpQuestion {
+  id     String       @id @default(cuid())
+  caseId String
+  case   ClinicalCase @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  text   String       @db.Text
+  order  Int          @default(0)
+}
+
+model QuestionImage {
+  id         String        @id @default(cuid())
+  questionId String
+  question   Question      @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  filePath   String
+  type       ImageType     @default(OTHER)
+  caption    String?
+  source     String?
+  license    String?
+  status     ContentStatus @default(DRAFT)
+
+  uploadedById String
+  uploadedBy   User   @relation("ImageUploadedBy", fields: [uploadedById], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@index([questionId])
+}
+
+// ---------- Document import ----------
+
+model ImportBatch {
+  id           String            @id @default(cuid())
+  fileName     String
+  fileType     ImportFileType
+  rawText      String?           @db.Text
+  status       ImportBatchStatus @default(PROCESSING)
+  errorMessage String?
+
+  uploadedById String
+  uploadedBy   User     @relation("BatchUploadedBy", fields: [uploadedById], references: [id])
+  uploadedAt   DateTime @default(now())
+
+  questions Question[]
+}
+
+// ---------- Learning progress & exam simulation ----------
+
+model UserProgress {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  questionId String
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  confidence     Confidence?
+  bookmarked     Boolean     @default(false)
+  timesReviewed  Int         @default(0)
+  lastReviewedAt DateTime?
+  nextReviewAt   DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, questionId])
+  @@index([userId, nextReviewAt])
+}
+
+model ExamSession {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  mode        ExamMode
+  specialtyId String?
+  startedAt   DateTime  @default(now())
+  completedAt DateTime?
+
+  answers ExamAnswer[]
+
+  @@index([userId])
+}
+
+model ExamAnswer {
+  id                  String      @id @default(cuid())
+  examSessionId       String
+  examSession         ExamSession @relation(fields: [examSessionId], references: [id], onDelete: Cascade)
+  questionId          String
+  question            Question    @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  userAnswerText      String?     @db.Text
+  revealedModelAnswer Boolean     @default(false)
+  selfRating          Confidence?
+  createdAt           DateTime    @default(now())
+}
+
+// ---------- Audit ----------
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  actorId    String?
+  actor      User?    @relation("AuditActor", fields: [actorId], references: [id], onDelete: SetNull)
+  entityType String
+  entityId   String
+  action     String
+  summary    String?
+  createdAt  DateTime @default(now())
+
+  @@index([entityType, entityId])
+}
