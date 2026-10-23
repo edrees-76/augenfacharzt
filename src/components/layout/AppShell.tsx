@@ -30,6 +30,7 @@ import type { UserModel as User } from "@/generated/prisma/models";
 import { logoutAction } from "@/app/actions/auth";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Footer } from "@/components/Footer";
+import { CreatorModal } from "@/components/CreatorModal";
 import { cn } from "@/lib/cn";
 
 interface AppShellProps {
@@ -67,6 +68,7 @@ export function AppShell({ user, children }: AppShellProps) {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [creatorModalOpen, setCreatorModalOpen] = useState(false);
 
   // Read saved collapsed state from localStorage
   useEffect(() => {
@@ -304,8 +306,55 @@ export function AppShell({ user, children }: AppShellProps) {
           )}
         </div>
 
-        {/* Sidebar Footer: User Profile */}
-        <div className="shrink-0 border-t border-border p-2.5">
+        {/* Sidebar Footer: Medical Direction & User Profile */}
+        <div className="shrink-0 border-t border-border p-2.5 space-y-2">
+          {/* Creator Attribution Card */}
+          {collapsed ? (
+            <button
+              type="button"
+              onClick={() => setCreatorModalOpen(true)}
+              title="Medizinisches Konzept & Design: Dr. Abdelhamid Ghunaim"
+              aria-label="Dr. Abdelhamid Ghunaim"
+              className="group mx-auto flex size-10 items-center justify-center rounded-[var(--radius-button)] border border-border/70 bg-surface-elevated/40 p-1 transition-all hover:border-accent/60 hover:bg-surface-elevated cursor-pointer"
+            >
+              <div className="relative size-7 overflow-hidden rounded-full border border-accent/40 bg-[#0b1622] shadow-xs transition-transform group-hover:scale-105">
+                <Image
+                  src="/branding/dr-ghunaim-logo.jpg"
+                  alt="Dr. Abdelhamid Ghunaim"
+                  fill
+                  sizes="28px"
+                  className="object-cover"
+                />
+              </div>
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => setCreatorModalOpen(true)}
+              className="group flex w-full items-center gap-2.5 rounded-[var(--radius-button)] border border-border/70 bg-surface-elevated/30 p-2 text-left transition-all hover:border-accent/50 hover:bg-surface-elevated cursor-pointer"
+            >
+              <div className="relative size-8 shrink-0 overflow-hidden rounded-full border border-accent/40 bg-[#0b1622] shadow-xs transition-transform group-hover:scale-105">
+                <Image
+                  src="/branding/dr-ghunaim-logo.jpg"
+                  alt="Dr. Abdelhamid Ghunaim"
+                  fill
+                  sizes="32px"
+                  className="object-cover"
+                />
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-1">
+                  <span className="truncate text-xs font-medium text-foreground transition-colors group-hover:text-accent">
+                    Dr. A. Ghunaim
+                  </span>
+                  <Sparkles className="size-3 text-accent shrink-0" />
+                </div>
+                <p className="truncate text-[10px] text-muted">
+                  Medizinisches Konzept
+                </p>
+              </div>
+            </button>
+          )}
 
           {/* User Account / Profile Card */}
           <div
@@ -417,6 +466,9 @@ export function AppShell({ user, children }: AppShellProps) {
         {/* Global Footer */}
         <Footer />
       </div>
+
+      {/* Creator Profile Modal */}
+      <CreatorModal open={creatorModalOpen} onClose={() => setCreatorModalOpen(false)} />
     </div>
   );
 }

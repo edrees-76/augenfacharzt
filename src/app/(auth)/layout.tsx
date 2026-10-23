@@ -28,6 +28,23 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
           </div>
         </div>
         <div className="animate-scale-in w-full max-w-md">{children}</div>
+
+        {/* Medical Direction & Concept Endorsement */}
+        <div className="animate-fade-in mt-6 flex items-center justify-center gap-2.5 rounded-full border border-border/60 bg-surface-elevated/40 px-3.5 py-1.5 text-xs text-muted shadow-xs">
+          <div className="relative size-6 shrink-0 overflow-hidden rounded-full border border-accent/40 bg-[#0b1622] shadow-xs">
+            <Image
+              src="/branding/dr-ghunaim-logo.jpg"
+              alt="Dr. Abdelhamid Ghunaim"
+              fill
+              sizes="24px"
+              className="object-cover"
+            />
+          </div>
+          <span>
+            Wissenschaftliche Leitung & Design:{" "}
+            <span className="font-medium text-foreground">Dr. Abdelhamid Ghunaim</span>
+          </span>
+        </div>
       </div>
 
       <Footer />
