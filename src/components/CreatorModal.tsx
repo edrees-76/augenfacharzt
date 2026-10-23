@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import Image from "next/image";
 import { X, Sparkles, Award, Eye } from "lucide-react";
 
@@ -22,77 +21,81 @@ export function CreatorModal({ open, onClose }: CreatorModalProps) {
       {/* Backdrop */}
       <div
         onClick={onClose}
-        className="fixed inset-0 bg-background/80 backdrop-blur-sm transition-opacity"
+        className="fixed inset-0 bg-black/75 backdrop-blur-md transition-opacity"
       />
 
       {/* Modal Card */}
-      <div className="relative w-full max-w-md overflow-hidden rounded-2xl border border-border bg-surface shadow-2xl animate-scale-in">
+      <div className="relative w-full max-w-md overflow-hidden rounded-2xl border border-border bg-surface p-6 sm:p-7 shadow-2xl animate-scale-in">
         {/* Subtle Decorative Top Glow */}
-        <div className="h-2 w-full bg-gradient-to-r from-accent/50 via-accent to-accent/50" />
+        <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-teal-500 via-amber-400 to-sky-500" />
 
         {/* Close Button */}
         <button
           type="button"
           onClick={onClose}
           aria-label="Schließen"
-          className="absolute right-4 top-5 rounded-full p-1.5 text-muted hover:bg-surface-elevated hover:text-foreground transition-colors cursor-pointer"
+          className="absolute right-4 top-4 rounded-full p-2 text-muted hover:bg-surface-elevated hover:text-foreground transition-colors cursor-pointer"
         >
-          <X className="size-4" />
+          <X className="size-5" />
         </button>
 
-        <div className="p-6 text-center">
-          {/* Logo Showcase with Gold/Cyan Glow and High-Resolution Full Display */}
-          <div className="relative mx-auto mb-5 flex w-full items-center justify-center">
-            <div className="absolute inset-0 rounded-2xl bg-accent/25 blur-2xl" />
-            <div className="relative h-40 w-64 overflow-hidden rounded-2xl border-2 border-accent/50 bg-[#0a1622] p-3 shadow-2xl transition-transform hover:scale-[1.02]">
+        <div className="text-center pt-2">
+          {/* Emblem Icon: Huge, Ultra-Sharp AG + Glowing Eye */}
+          <div className="relative mx-auto mb-4 flex size-28 items-center justify-center">
+            <div className="absolute inset-0 rounded-2xl bg-sky-500/20 blur-xl" />
+            <div className="relative size-28 overflow-hidden rounded-2xl border-2 border-accent/40 bg-[#07131e] shadow-2xl transition-transform hover:scale-105">
               <Image
-                src="/branding/dr-ghunaim-full.png"
-                alt="Dr. Abdelhamid Ghunaim – Ophthalmology"
+                src="/branding/dr-ghunaim-emblem-sharp.png"
+                alt="Dr. Abdelhamid Ghunaim – Logo Emblem"
                 fill
                 priority
-                sizes="256px"
-                className="object-contain p-2"
+                sizes="112px"
+                className="object-cover"
               />
             </div>
           </div>
 
-          {/* Title & Credentials */}
-          <div className="inline-flex items-center gap-1.5 rounded-full border border-accent/30 bg-accent/10 px-3 py-0.5 text-xs font-medium text-accent mb-2">
-            <Sparkles className="size-3" />
-            <span>Medizinisches Konzept & Design</span>
+          {/* Badge */}
+          <div className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface-elevated px-3 py-1 text-xs font-semibold text-foreground mb-2 shadow-xs">
+            <Sparkles className="size-3.5 text-accent" />
+            <span>Medizinisches Konzept & Plattformdesign</span>
           </div>
 
-          <h2 id="creator-dialog-title" className="text-xl font-bold tracking-tight text-foreground">
+          {/* Doctor Name - Large, Crisp, 100% Readable Typography */}
+          <h2
+            id="creator-dialog-title"
+            className="text-2xl font-extrabold tracking-tight text-foreground"
+          >
             Dr. Abdelhamid Ghunaim
           </h2>
-          <p className="font-mono text-xs uppercase tracking-wider text-muted mt-0.5">
-            Ophthalmology / Augenheilkunde
+          <p className="mt-1 text-xs sm:text-sm font-semibold tracking-wider text-accent uppercase">
+            Ophthalmology • Facharzt für Augenheilkunde
           </p>
 
-          {/* Bio / Description */}
-          <div className="mt-4 rounded-xl border border-border/70 bg-surface-elevated/40 p-4 text-left text-xs leading-relaxed text-foreground/90 space-y-2.5">
-            <div className="flex items-start gap-2.5">
-              <Eye className="size-4 text-accent shrink-0 mt-0.5" />
+          {/* Bio / Description with High Contrast and Clear Font */}
+          <div className="mt-5 rounded-xl border border-border bg-surface-elevated/70 p-4 text-left text-xs sm:text-sm leading-relaxed text-foreground space-y-3">
+            <div className="flex items-start gap-3">
+              <Eye className="size-4 sm:size-5 text-accent shrink-0 mt-0.5" />
               <p>
                 Konzeption und wissenschaftliche Strukturierung der Vorbereitungsplattform für die
-                mündliche <strong>Facharztprüfung Augenheilkunde</strong> in Deutschland.
+                mündliche <strong className="font-semibold text-foreground">Facharztprüfung Augenheilkunde</strong> in Deutschland.
               </p>
             </div>
-            <div className="flex items-start gap-2.5">
-              <Award className="size-4 text-accent shrink-0 mt-0.5" />
+            <div className="flex items-start gap-3">
+              <Award className="size-4 sm:size-5 text-accent shrink-0 mt-0.5" />
               <p>
                 Entwickelt nach den Richtlinien der Landesärztekammern und den aktuellen
-                Leitlinien der Deutschen Ophthalmologischen Gesellschaft (DOG / BVA).
+                Leitlinien der <strong className="font-semibold text-foreground">Deutschen Ophthalmologischen Gesellschaft (DOG / BVA)</strong>.
               </p>
             </div>
           </div>
 
-          {/* Action Button */}
+          {/* Action Button: Guaranteed Ultra-High Contrast in ALL Themes */}
           <div className="mt-6 flex justify-center">
             <button
               type="button"
               onClick={onClose}
-              className="w-full rounded-[var(--radius-button)] bg-accent px-4 py-2.5 text-xs font-semibold text-white shadow-md transition-all hover:bg-accent-hover active:scale-[0.98] cursor-pointer"
+              className="w-full rounded-[var(--radius-button)] bg-foreground px-5 py-3 text-sm font-bold text-background shadow-lg transition-all hover:opacity-90 active:scale-[0.98] cursor-pointer"
             >
               Schließen
             </button>
