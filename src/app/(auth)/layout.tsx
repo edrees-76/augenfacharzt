@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Footer } from "@/components/Footer";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { Sparkles } from "lucide-react";
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -27,23 +28,37 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
             </p>
           </div>
         </div>
+
         <div className="animate-scale-in w-full max-w-md">{children}</div>
 
-        {/* Medical Direction & Concept Endorsement */}
-        <div className="animate-fade-in mt-6 flex items-center justify-center gap-2.5 rounded-full border border-border/60 bg-surface-elevated/40 px-3.5 py-1.5 text-xs text-muted shadow-xs">
-          <div className="relative size-6 shrink-0 overflow-hidden rounded-full border border-accent/40 bg-[#0b1622] shadow-xs">
-            <Image
-              src="/branding/dr-ghunaim-logo.jpg"
-              alt="Dr. Abdelhamid Ghunaim"
-              fill
-              sizes="24px"
-              className="object-cover"
-            />
+        {/* Medical Direction & Concept Endorsement Card (High Contrast & Clear) */}
+        <div className="animate-fade-in mt-8 w-full max-w-md rounded-2xl border border-border bg-surface-elevated/70 p-4 shadow-md backdrop-blur-sm transition-all hover:border-accent/50">
+          <div className="flex items-center gap-3.5">
+            <div className="relative size-14 shrink-0 overflow-hidden rounded-xl border-2 border-accent/40 bg-[#07131e] shadow-md">
+              <Image
+                src="/branding/dr-ghunaim-emblem-sharp.png"
+                alt="Dr. Abdelhamid Ghunaim"
+                fill
+                priority
+                sizes="56px"
+                className="object-cover"
+              />
+            </div>
+            <div className="min-w-0 flex-1 text-left">
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-bold text-foreground">
+                  Dr. Abdelhamid Ghunaim
+                </span>
+                <span className="inline-flex items-center gap-1 rounded-full bg-accent/15 px-2 py-0.5 text-[10px] font-semibold text-accent">
+                  <Sparkles className="size-2.5" />
+                  Ophthalmology
+                </span>
+              </div>
+              <p className="text-xs text-muted font-medium mt-0.5">
+                Wissenschaftliche Leitung & Plattformkonzept
+              </p>
+            </div>
           </div>
-          <span>
-            Wissenschaftliche Leitung & Design:{" "}
-            <span className="font-medium text-foreground">Dr. Abdelhamid Ghunaim</span>
-          </span>
         </div>
       </div>
 

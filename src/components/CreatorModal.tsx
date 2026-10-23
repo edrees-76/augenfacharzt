@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { X, Sparkles, Award, Eye, Mail, ExternalLink } from "lucide-react";
+import { X, Sparkles, Award, Eye } from "lucide-react";
 
 interface CreatorModalProps {
   open: boolean;
@@ -41,16 +41,17 @@ export function CreatorModal({ open, onClose }: CreatorModalProps) {
         </button>
 
         <div className="p-6 text-center">
-          {/* Logo Showcase with Gold/Cyan Glow */}
-          <div className="relative mx-auto mb-4 flex size-28 items-center justify-center">
-            <div className="absolute inset-0 rounded-2xl bg-accent/20 blur-xl" />
-            <div className="relative size-28 overflow-hidden rounded-2xl border-2 border-accent/40 shadow-xl bg-[#0b1622]">
+          {/* Logo Showcase with Gold/Cyan Glow and High-Resolution Full Display */}
+          <div className="relative mx-auto mb-5 flex w-full items-center justify-center">
+            <div className="absolute inset-0 rounded-2xl bg-accent/25 blur-2xl" />
+            <div className="relative h-40 w-64 overflow-hidden rounded-2xl border-2 border-accent/50 bg-[#0a1622] p-3 shadow-2xl transition-transform hover:scale-[1.02]">
               <Image
-                src="/branding/dr-ghunaim-logo.jpg"
+                src="/branding/dr-ghunaim-full.png"
                 alt="Dr. Abdelhamid Ghunaim – Ophthalmology"
                 fill
                 priority
-                className="object-cover"
+                sizes="256px"
+                className="object-contain p-2"
               />
             </div>
           </div>

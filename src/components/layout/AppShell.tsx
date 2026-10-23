@@ -308,21 +308,22 @@ export function AppShell({ user, children }: AppShellProps) {
 
         {/* Sidebar Footer: Medical Direction & User Profile */}
         <div className="shrink-0 border-t border-border p-2.5 space-y-2">
-          {/* Creator Attribution Card */}
+          {/* Creator Attribution Card (High Contrast & Clear) */}
           {collapsed ? (
             <button
               type="button"
               onClick={() => setCreatorModalOpen(true)}
               title="Medizinisches Konzept & Design: Dr. Abdelhamid Ghunaim"
               aria-label="Dr. Abdelhamid Ghunaim"
-              className="group mx-auto flex size-10 items-center justify-center rounded-[var(--radius-button)] border border-border/70 bg-surface-elevated/40 p-1 transition-all hover:border-accent/60 hover:bg-surface-elevated cursor-pointer"
+              className="group mx-auto flex size-12 items-center justify-center rounded-xl border border-border bg-surface-elevated/70 p-1 transition-all hover:scale-105 hover:border-accent hover:bg-surface-elevated hover:shadow-sm cursor-pointer"
             >
-              <div className="relative size-7 overflow-hidden rounded-full border border-accent/40 bg-[#0b1622] shadow-xs transition-transform group-hover:scale-105">
+              <div className="relative size-10 overflow-hidden rounded-lg border border-accent/40 bg-[#07131e] shadow-xs transition-transform group-hover:scale-105">
                 <Image
-                  src="/branding/dr-ghunaim-logo.jpg"
+                  src="/branding/dr-ghunaim-emblem-sharp.png"
                   alt="Dr. Abdelhamid Ghunaim"
                   fill
-                  sizes="28px"
+                  sizes="40px"
+                  priority
                   className="object-cover"
                 />
               </div>
@@ -331,26 +332,27 @@ export function AppShell({ user, children }: AppShellProps) {
             <button
               type="button"
               onClick={() => setCreatorModalOpen(true)}
-              className="group flex w-full items-center gap-2.5 rounded-[var(--radius-button)] border border-border/70 bg-surface-elevated/30 p-2 text-left transition-all hover:border-accent/50 hover:bg-surface-elevated cursor-pointer"
+              className="group flex w-full items-center gap-3 rounded-xl border border-border bg-surface-elevated/70 p-2.5 text-left transition-all hover:border-accent hover:bg-surface-elevated hover:shadow-sm cursor-pointer"
             >
-              <div className="relative size-8 shrink-0 overflow-hidden rounded-full border border-accent/40 bg-[#0b1622] shadow-xs transition-transform group-hover:scale-105">
+              <div className="relative size-11 shrink-0 overflow-hidden rounded-lg border border-accent/40 bg-[#07131e] shadow-xs transition-transform group-hover:scale-105">
                 <Image
-                  src="/branding/dr-ghunaim-logo.jpg"
+                  src="/branding/dr-ghunaim-emblem-sharp.png"
                   alt="Dr. Abdelhamid Ghunaim"
                   fill
-                  sizes="32px"
+                  sizes="44px"
+                  priority
                   className="object-cover"
                 />
               </div>
               <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-1">
-                  <span className="truncate text-xs font-medium text-foreground transition-colors group-hover:text-accent">
-                    Dr. A. Ghunaim
+                <div className="flex items-center gap-1.5">
+                  <span className="truncate text-xs font-semibold text-foreground transition-colors group-hover:text-accent">
+                    Dr. Abdelhamid Ghunaim
                   </span>
                   <Sparkles className="size-3 text-accent shrink-0" />
                 </div>
-                <p className="truncate text-[10px] text-muted">
-                  Medizinisches Konzept
+                <p className="truncate text-[10px] text-muted font-medium">
+                  Medizinisches Konzept & Design
                 </p>
               </div>
             </button>
